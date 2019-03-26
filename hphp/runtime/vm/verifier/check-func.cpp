@@ -788,7 +788,6 @@ bool FuncChecker::checkSig(PC pc, int len, const FlavorDesc* args,
 const FlavorDesc* FuncChecker::sig(PC pc) {
   static const FlavorDesc inputSigs[][kMaxHhbcImms] = {
   #define NOV { },
-  #define CUMANY { },
   #define CVUMANY { },
   #define FPUSH(nin, nobj) { },
   #define FCALL { },
@@ -810,7 +809,6 @@ const FlavorDesc* FuncChecker::sig(PC pc) {
   #undef F_MFINAL
   #undef C_MFINAL
   #undef V_MFINAL
-  #undef CUMANY
   #undef CVUMANY
   #undef FPUSH
   #undef FCALL
@@ -870,9 +868,9 @@ const FlavorDesc* FuncChecker::sig(PC pc) {
       m_tmp_sig[i] = CVUV;
     }
     return m_tmp_sig;
-  case Op::CreateCl:  // TWO(IVA,SA),  CUMANY,   ONE(CV)
+  case Op::CreateCl:  // TWO(IVA,SA),  CVUMANY,   ONE(CV)
     for (int i = 0, n = instrNumPops(pc); i < n; ++i) {
-      m_tmp_sig[i] = CUV;
+      m_tmp_sig[i] = CVUV;
     }
     return m_tmp_sig;
   case Op::NewPackedArray:  // ONE(IVA),     CMANY,   ONE(CV)

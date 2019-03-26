@@ -414,7 +414,6 @@ inline SSATmp* popC(IRGS& env, GuardConstraint gc = DataTypeSpecific) {
   return assertType(pop(env, gc), TCell);
 }
 
-inline SSATmp* popCU(IRGS& env) { return assertType(pop(env), TCell); }
 inline SSATmp* popV(IRGS& env) { return assertType(pop(env), TBoxedInitCell); }
 inline SSATmp* popF(IRGS& env) { return assertType(pop(env), TGen); }
 inline SSATmp* popU(IRGS& env) { return assertType(pop(env), TUninit); }

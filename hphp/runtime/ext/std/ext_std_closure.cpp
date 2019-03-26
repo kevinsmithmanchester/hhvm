@@ -65,7 +65,8 @@ static Array HHVM_METHOD(Closure, __debugInfo) {
     auto propsInfo = cls->declProperties();
     auto nProps = cls->numDeclProperties();
     for (size_t i = 0; i < nProps; ++i) {
-      use.set(Variant(StrNR(propsInfo[i].name)), useVars[i]);
+      auto value = &useVars[i];
+      use.setWithRef(Variant(StrNR(propsInfo[i].name)), tvAsCVarRef(value));
     }
 
     if (!use.empty()) {
@@ -141,7 +142,8 @@ void c_Closure::init(int numArgs, ActRec* ar, TypedValue* sp) {
   int i = 0;
   assertx(numArgs <= numDeclProperties);
   for (; i < numArgs; i++) {
-    cellCopy(*--beforeCurUseVar, *curProperty++);
+    // teleport the references in here so we don't incref
+    tvCopy(*--beforeCurUseVar, *curProperty++);
   }
   for (; i < numDeclProperties; ++i) {
     tvWriteUninit(*curProperty++);
@@ -193,7 +195,7 @@ ObjectData* c_Closure::clone() {
   auto const nProps = cls->numDeclProperties();
   auto const stop = src + nProps;
   for (; src != stop; ++src, ++dest) {
-    cellDup(*src, *dest);
+    tvDup(*src, *dest);
   }
 
   return ret;
